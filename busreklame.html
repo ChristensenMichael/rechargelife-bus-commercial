@@ -485,7 +485,7 @@
         </div>
         <div class="toolbar-group" id="textButtons">
           <span class="toolbar-label">Tekst:</span>
-          <button class="btn active" type="button" data-text="surgery" onclick="setTextVariant('surgery')">
+          <button class="btn" type="button" data-text="surgery" onclick="setTextVariant('surgery')">
             1 · Operation &amp; æstetik
           </button>
           <button class="btn" type="button" data-text="injury" onclick="setTextVariant('injury')">
@@ -494,7 +494,7 @@
           <button class="btn" type="button" data-text="curious" onclick="setTextVariant('curious')">
             3 · Nysgerrig / Ilt under tryk
           </button>
-          <button class="btn" type="button" data-text="direct" onclick="setTextVariant('direct')">
+          <button class="btn active" type="button" data-text="direct" onclick="setTextVariant('direct')">
             4 · Stramt &amp; direkte
           </button>
         </div>
@@ -504,7 +504,7 @@
       <div class="toolbar-row">
         <div class="toolbar-group" id="bgButtons">
           <span class="toolbar-label">Baggrund:</span>
-          <button class="btn active" type="button" data-bg="pictures/DSC08876.jpg" onclick="setBackground('pictures/DSC08876.jpg')">
+          <button class="btn" type="button" data-bg="pictures/DSC08876.jpg" onclick="setBackground('pictures/DSC08876.jpg')">
             DSC08876
           </button>
           <button class="btn" type="button" data-bg="pictures/DSC08855.jpg" onclick="setBackground('pictures/DSC08855.jpg')">
@@ -516,7 +516,7 @@
           <button class="btn" type="button" data-bg="pictures/DSC08896.jpg" onclick="setBackground('pictures/DSC08896.jpg')">
             DSC08896
           </button>
-          <button class="btn" type="button" data-bg="pictures/DSC08865.jpg" onclick="setBackground('pictures/DSC08865.jpg')">
+          <button class="btn active" type="button" data-bg="pictures/DSC08865.jpg" onclick="setBackground('pictures/DSC08865.jpg')">
             DSC08865
           </button>
           <button class="btn" type="button" data-bg="pictures/DSC08935.jpg" onclick="setBackground('pictures/DSC08935.jpg')">
@@ -532,20 +532,20 @@
       <div class="toolbar-row">
         <div class="toolbar-group" id="logoSideButtons">
           <span class="toolbar-label">Logo-side:</span>
-          <button class="btn active" type="button" data-side="left" onclick="setLogoSide('left')">
+          <button class="btn" type="button" data-side="left" onclick="setLogoSide('left')">
             Logo i venstre side
           </button>
-          <button class="btn" type="button" data-side="right" onclick="setLogoSide('right')">
+          <button class="btn active" type="button" data-side="right" onclick="setLogoSide('right')">
             Logo i højre side
           </button>
         </div>
 
         <div class="toolbar-group" id="portraitButtons">
           <span class="toolbar-label">Profilbillede:</span>
-          <button class="btn active" type="button" id="togglePortraitBtn" onclick="togglePortraitEnabled()">
-            Profilbillede: Til
+          <button class="btn" type="button" id="togglePortraitBtn" onclick="togglePortraitEnabled()">
+            Profilbillede: Fra
           </button>
-          <button class="btn active" type="button" data-portrait="pictures/Michael_colour_blue.jpg" onclick="selectPortrait('pictures/Michael_colour_blue.jpg')">
+          <button class="btn" type="button" data-portrait="pictures/Michael_colour_blue.jpg" onclick="selectPortrait('pictures/Michael_colour_blue.jpg')">
             Blå farve
           </button>
           <button class="btn" type="button" data-portrait="pictures/Michael_colour_black1.jpg" onclick="selectPortrait('pictures/Michael_colour_black1.jpg')">
@@ -562,9 +562,9 @@
     </div>
 
     <div class="bus-ad-wrapper">
-      <div class="bus-ad-canvas" id="busAdCanvas">
+      <div class="bus-ad-canvas logo-right no-portrait" id="busAdCanvas">
         <!-- Klinikbillede som baggrund -->
-        <img class="clinic-bg" id="clinicBg" src="pictures/DSC08876.jpg" alt="Recharge Life klinik – hyperbarisk iltbehandling" />
+        <img class="clinic-bg" id="clinicBg" src="pictures/DSC08865.jpg" alt="Recharge Life klinik – hyperbarisk iltbehandling" />
 
         <!-- Dæmpet overlay i brandboardets farver -->
         <div class="clinic-overlay" id="clinicOverlay"></div>
@@ -578,12 +578,12 @@
 
         <!-- Hovedbudskab -->
         <div class="message-block">
-          <div class="eyebrow" id="eyebrowText">Efter operation &amp; kosmetisk indgreb · Hillerød</div>
+          <div class="eyebrow" id="eyebrowText">Hyperbarisk ilt &amp; restitution · Hillerød</div>
           <h1 class="headline" id="headlineText">
-            Det pæneste resultat starter, når operationen er slut.
+            Når kroppen skal hele hurtigere.
           </h1>
           <p class="subline" id="sublineText">
-            Giv vævet optimale betingelser for hurtig, rolig heling med ilt under tryk.
+            Efter operation, kosmetisk behandling eller skade.
           </p>
         </div>
 
@@ -602,10 +602,10 @@
 
       <div class="status-banner" id="statusBanner">
         <div>
-          <strong>Valgt opsætning:</strong> Tekst 1 · Logo i venstre side · Profilbillede til · Baggrund normal
+          <strong>Valgt opsætning:</strong> 4 · Stramt &amp; direkte · Logo i højre side · Profilbillede fra · Baggrund: DSC08865.jpg (normal)
         </div>
         <div>
-          <strong>Tip:</strong> Når logo står i højre side, placeres profilbilledet automatisk i venstre side vendt mod teksten.
+          <strong>Tip:</strong> Alle valg kan kombineres frit på tværs.
         </div>
       </div>
     </div>
@@ -653,16 +653,16 @@
         label: "4 · Stramt & direkte",
         eyebrow: "Hyperbarisk ilt & restitution · Hillerød",
         headline: "Når kroppen skal hele hurtigere.",
-        subline: "Efter operation, kosmetisk behandling eller skade i krop og hoved – rechargelife.dk · Baldersvej 9, Hillerød."
+        subline: "Efter operation, kosmetisk behandling eller skade i krop og hoved."
       }
     };
 
     const state = {
-      textKey: "surgery",
-      bgSrc: "pictures/DSC08876.jpg",
+      textKey: "direct",
+      bgSrc: "pictures/DSC08865.jpg",
       bgFlipped: false,
-      logoSide: "left",
-      portraitEnabled: true,
+      logoSide: "right",
+      portraitEnabled: false,
       portraitSrc: "pictures/Michael_colour_blue.jpg"
     };
 
@@ -740,6 +740,16 @@
       toggleBtn.classList.toggle("active", state.portraitEnabled);
       toggleBtn.textContent = state.portraitEnabled ? "Profilbillede: Til" : "Profilbillede: Fra";
 
+      if (!state.portraitEnabled) {
+        document.querySelectorAll("#portraitButtons [data-portrait]").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+      } else {
+        document.querySelectorAll("#portraitButtons [data-portrait]").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-portrait") === state.portraitSrc);
+        });
+      }
+
       updateStatusBanner();
     }
 
@@ -747,7 +757,6 @@
       state.portraitSrc = src;
       document.getElementById("portraitImg").src = src;
 
-      // Sørg for at profilbilledet automatisk slås til, hvis brugeren klikker på et specifikt portræt
       if (!state.portraitEnabled) {
         state.portraitEnabled = true;
         document.getElementById("busAdCanvas").classList.remove("no-portrait");
