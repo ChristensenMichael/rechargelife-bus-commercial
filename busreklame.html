@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recharge Life – Busreklame (Venstreside) Udkast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Belleza&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* Brandboard farver */
+      --brand-deep: #013F58;
+      --brand-dark: #151F28;
+      --brand-ice: #B6CCD7;
+      --brand-taupe: #94857B;
+      --brand-sand: #E0DFD8;
+
+      --bg-primary: #151F28;
+      --bg-surface: #101820;
+      --bg-elevated: #013F58;
+      --text-primary: #E0DFD8;
+      --text-secondary: #B6CCD7;
+      --text-muted: #94857B;
+      --accent: #B6CCD7;
+      --accent-warm: #94857B;
+      --accent-soft: rgba(182, 204, 215, 0.16);
+      --border: rgba(224, 223, 216, 0.16);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-display: "Belleza", "Inter", Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.45;
+      padding: 28px 20px 60px;
+    }
+
+    .container {
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    /* Top kontrolpanel (kun til preview i VS Code / browser) */
+    .preview-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 22px;
+    }
+
+    .preview-meta {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    .preview-meta strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .variant-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      background: rgba(21, 31, 40, 0.92);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 13px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+    }
+
+    .btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--brand-sand);
+      box-shadow: 0 0 0 1px rgba(182, 204, 215, 0.25);
+    }
+
+    /* Selve busreklame-fladen (bredformat venstreside) */
+    .bus-ad-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .bus-ad-canvas {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3.35 / 1;
+      min-height: 350px;
+      background-color: var(--brand-dark);
+      border: 1px solid rgba(182, 204, 215, 0.22);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.45fr 1.35fr 1.05fr;
+      grid-template-areas: "left center right";
+      align-items: center;
+      gap: 28px;
+      padding: 24px 36px;
+    }
+
+    /* Layout-varianter styret via knapperne i toppen */
+    .bus-ad-canvas.layout-swap {
+      grid-template-columns: 1.05fr 1.4fr 1.4fr;
+      grid-template-areas: "right center left";
+    }
+
+    .bus-ad-canvas.layout-curious {
+      grid-template-columns: 1.35fr 1.5fr 0.95fr;
+      grid-template-areas: "left center right";
+    }
+
+    .bus-ad-canvas.layout-no-portrait {
+      grid-template-columns: 1.5fr 1.6fr 0.9fr;
+      grid-template-areas: "left center right";
+    }
+
+    .bus-ad-canvas.layout-no-portrait .right-column {
+      display: none;
+    }
+
+    .bus-ad-canvas.layout-no-portrait .message-block {
+      grid-column: 2 / span 2;
+    }
+
+    /* Klinikbillede som baggrund, forskudt ca. 1/3 nedad og 1/6 til venstre */
+    .clinic-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 33.33% 33.33%;
+      z-index: 0;
+      opacity: 0.72;
+      transform: translateX(-16.67%) scale(1.24);
+      filter: saturate(0.65) contrast(1.02);
+    }
+
+    /* Dæmpet overlay i brandets farver */
+    .clinic-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        90deg,
+        rgba(21, 31, 40, 0.9) 0%,
+        rgba(1, 63, 88, 0.82) 52%,
+        rgba(21, 31, 40, 0.92) 100%
+      );
+    }
+
+    /* Venstre/Logo-område */
+    .logo-column {
+      grid-area: left;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      height: 100%;
+      gap: 10px;
+    }
+
+    .bus-ad-canvas.layout-swap .logo-column {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .logo-slot {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .bus-ad-canvas.layout-swap .logo-slot {
+      justify-content: flex-end;
+    }
+
+    .logo-slot img {
+      max-width: 100%;
+      max-height: 290px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      transform: scale(1.28);
+      transform-origin: left center;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+    }
+
+    .bus-ad-canvas.layout-swap .logo-slot img {
+      transform-origin: right center;
+    }
+
+    /* Midterområde: Hovedbudskab */
+    .message-block {
+      grid-area: center;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brand-ice);
+      text-shadow: 0 2px 10px rgba(21, 31, 40, 0.8);
+    }
+
+    .headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 2.95vw, 2.85rem);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: 0.01em;
+      color: var(--brand-sand);
+      text-shadow: 0 3px 16px rgba(21, 31, 40, 0.85);
+    }
+
+    .subline {
+      font-family: var(--font-sans);
+      font-size: clamp(0.92rem, 1.22vw, 1.08rem);
+      color: var(--brand-ice);
+      max-width: 44ch;
+      text-shadow: 0 2px 12px rgba(21, 31, 40, 0.85);
+    }
+
+    /* Portræt- og kontaktområde (sikret mod klipning i bunden) */
+    .right-column {
+      grid-area: right;
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      max-height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: end;
+      justify-items: end;
+      gap: 10px;
+    }
+
+    .bus-ad-canvas.layout-swap .right-column {
+      justify-items: start;
+    }
+
+    .portrait-slot {
+      position: relative;
+      width: 100%;
+      max-width: 260px;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      -webkit-mask-image:
+        radial-gradient(ellipse 76% 80% at 52% 48%, rgba(0, 0, 0, 0.92) 34%, rgba(0, 0, 0, 0.35) 68%, transparent 100%);
+      mask-image:
+        radial-gradient(ellipse 76% 80% at 52% 48%, rgba(0, 0, 0, 0.92) 34%, rgba(0, 0, 0, 0.35) 68%, transparent 100%);
+    }
+
+    .portrait-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 0.54;
+      filter: contrast(0.98) saturate(0.75);
+      display: block;
+    }
+
+    .cta-line {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--brand-sand);
+      text-align: right;
+      line-height: 1.25;
+      white-space: nowrap;
+      text-shadow: 0 2px 10px rgba(21, 31, 40, 0.9);
+    }
+
+    .bus-ad-canvas.layout-swap .cta-line {
+      text-align: left;
+    }
+
+    .cta-line span {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 400;
+      color: var(--brand-taupe);
+    }
+
+    /* Koncept-beskrivelse under reklamen */
+    .concept-banner {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(1, 63, 88, 0.24);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+
+    .concept-banner strong {
+      color: var(--brand-sand);
+    }
+
+    /* Noter til dig i VS Code */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .note-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .note-card h2 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .note-card p, .note-card li {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+
+    .note-card ul {
+      padding-left: 18px;
+    }
+
+    .note-card li {
+      margin-bottom: 6px;
+    }
+
+    .note-card code {
+      color: var(--brand-sand);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .bus-ad-canvas,
+      .bus-ad-canvas.layout-swap,
+      .bus-ad-canvas.layout-curious,
+      .bus-ad-canvas.layout-no-portrait {
+        aspect-ratio: auto;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "left"
+          "center"
+          "right";
+        text-align: left;
+      }
+
+      .bus-ad-canvas.layout-no-portrait .message-block {
+        grid-column: auto;
+      }
+
+      .logo-column,
+      .bus-ad-canvas.layout-swap .logo-column,
+      .right-column,
+      .cta-line,
+      .bus-ad-canvas.layout-swap .cta-line {
+        align-items: flex-start;
+        justify-items: start;
+        text-align: left;
+      }
+
+      .logo-slot img,
+      .bus-ad-canvas.layout-swap .logo-slot img {
+        max-height: 200px;
+        transform: scale(1.1);
+        transform-origin: left center;
+      }
+
+      .right-column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .portrait-slot {
+        max-width: 320px;
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="preview-toolbar">
+      <div class="preview-meta">
+        <strong>Recharge Life</strong> · Alm. venstreside (Ordre #122411) · Uge 52 (2026) – Uge 24 (2027) · Deadline: <strong>01.12.2026</strong>
+      </div>
+      <div class="variant-buttons">
+        <button class="btn active" type="button" onclick="setConcept('surgery', this)">
+          1 · Operation &amp; æstetik
+        </button>
+        <button class="btn" type="button" onclick="setConcept('injury', this)">
+          2 · Skader &amp; ombyttet layout
+        </button>
+        <button class="btn" type="button" onclick="setConcept('curious', this)">
+          3 · Nysgerrig / Ilt under tryk
+        </button>
+        <button class="btn" type="button" onclick="setConcept('clean', this)">
+          4 · Stramt fokus (uden portræt)
+        </button>
+      </div>
+    </div>
+
+    <div class="bus-ad-wrapper">
+      <div class="bus-ad-canvas" id="busAdCanvas">
+        <!-- Klinikbillede som baggrund, flyttet ca. 1/3 nedad og 1/6 til venstre -->
+        <img class="clinic-bg" src="pictures/DSC08876.jpg" alt="Recharge Life klinik – hyperbarisk iltbehandling" />
+
+        <!-- Dæmpet overlay i brandboardets farver -->
+        <div class="clinic-overlay" id="clinicOverlay"></div>
+
+        <!-- Logo-kolonne -->
+        <div class="logo-column">
+          <div class="logo-slot" id="logoSlot">
+            <img src="pictures/Recharge Life_Large_Transparent_Variant 1.png" alt="Recharge Life" />
+          </div>
+        </div>
+
+        <!-- Hovedbudskab -->
+        <div class="message-block">
+          <div class="eyebrow" id="eyebrowText">Efter operation &amp; kosmetisk indgreb · Hillerød</div>
+          <h1 class="headline" id="headlineText">
+            Det pæneste resultat starter, når operationen er slut.
+          </h1>
+          <p class="subline" id="sublineText">
+            Giv vævet optimale betingelser for hurtig, rolig heling med ilt under tryk.
+          </p>
+        </div>
+
+        <!-- Portræt + kontakt/web (sikret med minmax(0, 1fr) så teksten nederst aldrig skubbes ud) -->
+        <div class="right-column">
+          <div class="portrait-slot" id="portraitSlot">
+            <img src="pictures/MichaelBWJuly2026.png" alt="Michael Boye Christensen – Recharge Life" />
+          </div>
+
+          <div class="cta-line">
+            rechargelife.dk
+            <span>Baldersvej 9 · Hillerød</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-banner" id="conceptBanner">
+        <div>
+          <strong>Grafiker-note (Koncept 1):</strong> Rammer målgruppen for kosmetiske og kirurgiske indgreb ved at koble selve efterforløbet til et roligere og flottere slutresultat.
+        </div>
+        <div>
+          <strong>Layout:</strong> Logo tv. · Budskab midt · Fadet portræt + web th.
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-grid">
+      <div class="note-card">
+        <h2>Hvad der blev rettet nederst til højre</h2>
+        <ul>
+          <li><code>.right-column</code> bruger nu <code>grid-template-rows: minmax(0, 1fr) auto</code> og <code>min-height: 0</code> på <code>.portrait-slot</code>, så <code>rechargelife.dk</code> og <code>Baldersvej 9 · Hillerød</code> altid forbliver synlige i bunden.</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h2>Husk til grafiker@outofhomemedia.dk</h2>
+        <ul>
+          <li><strong>Deadline:</strong> Senest <strong>01.12.2026</strong>.</li>
+          <li><strong>Farver:</strong> Lever billeder og logo i <strong>CMYK</strong> (skærmfarver kan afvige ved tryk).</li>
+          <li><strong>Afsender:</strong> Recharge Life fremgår tydeligt.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const concepts = {
+      surgery: {
+        layoutClass: "",
+        eyebrow: "Efter operation & kosmetisk indgreb · Hillerød",
+        headline: "Det pæneste resultat starter, når operationen er slut.",
+        subline: "Giv vævet optimale betingelser for hurtig, rolig heling med ilt under tryk.",
+        note: "<strong>Grafiker-note (Koncept 1):</strong> Rammer målgruppen for kosmetiske og kirurgiske indgreb ved at koble selve efterforløbet til et roligere og flottere slutresultat.",
+        layoutMeta: "<strong>Layout:</strong> Logo tv. · Budskab midt · Fadet portræt + web th."
+      },
+      injury: {
+        layoutClass: "layout-swap",
+        eyebrow: "Skader & restitution · Hillerød",
+        headline: "Kroppen kan hele hurtigere, end du tror.",
+        subline: "Målrettet restitution efter skade, overbelastning eller indgreb.",
+        note: "<strong>Grafiker-note (Koncept 2):</strong> Taler direkte til aktive og skadesramte med ombyttet billedbalance – portrættet fader ind fra venstre, mens logo og adresse samles til højre.",
+        layoutMeta: "<strong>Layout:</strong> Portræt tv. · Budskab midt · Logo + web th."
+      },
+      curious: {
+        layoutClass: "layout-curious",
+        eyebrow: "Nysgerrig på ilt under tryk? · Hillerød",
+        headline: "Hvad sker der, når kroppen får ilt under tryk?",
+        subline: "Et overset redskab til hurtigere heling, restitution og fornyet energi.",
+        note: "<strong>Grafiker-note (Koncept 3):</strong> Spiller på nysgerrighed i trafikken – folk ser bussen, undrer sig over spørgsmålet og husker Recharge Life.",
+        layoutMeta: "<strong>Layout:</strong> Stort logo tv. · Spørgsmål midt · Fadet portræt + web th."
+      },
+      clean: {
+        layoutClass: "layout-no-portrait",
+        eyebrow: "Hyperbarisk ilt & restitution · Hillerød",
+        headline: "Når kroppen skal hele hurtigere.",
+        subline: "Efter operation, kosmetisk behandling eller skade – rechargelife.dk · Baldersvej 9, Hillerød.",
+        note: "<strong>Grafiker-note (Koncept 4):</strong> Ekstra stram og rolig komposition uden portræt, så logo, klinikstemning og hovedbudskab får maksimal ro.",
+        layoutMeta: "<strong>Layout:</strong> Stort logo tv. · Stramt budskab & info th."
+      }
+    };
+
+    function setConcept(key, clickedBtn) {
+      const data = concepts[key];
+      if (!data) return;
+
+      const canvas = document.getElementById("busAdCanvas");
+      canvas.className = "bus-ad-canvas";
+      if (data.layoutClass) {
+        canvas.classList.add(data.layoutClass);
+      }
+
+      document.getElementById("eyebrowText").textContent = data.eyebrow;
+      document.getElementById("headlineText").textContent = data.headline;
+      document.getElementById("sublineText").textContent = data.subline;
+
+      document.getElementById("conceptBanner").innerHTML =
+        "<div>" + data.note + "</div><div>" + data.layoutMeta + "</div>";
+
+      document.querySelectorAll(".variant-buttons .btn").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      if (clickedBtn) {
+        clickedBtn.classList.add("active");
+      }
+    }
+  </script>
+</body>
+</html>
