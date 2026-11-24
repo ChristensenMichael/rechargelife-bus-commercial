@@ -51,22 +51,44 @@
     }
 
     .container {
-      max-width: 1380px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
     /* Top kontrolpanel (kun til preview i VS Code / browser) */
     .preview-toolbar {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
+      flex-direction: column;
+      gap: 12px;
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 14px 18px;
+      padding: 16px 18px;
       margin-bottom: 22px;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--brand-taupe);
+      margin-right: 4px;
     }
 
     .preview-meta {
@@ -79,20 +101,14 @@
       font-weight: 600;
     }
 
-    .variant-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
     .btn {
       background: rgba(21, 31, 40, 0.92);
       color: var(--text-primary);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 8px 13px;
+      padding: 7px 12px;
       font-family: var(--font-sans);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -129,34 +145,28 @@
       overflow: hidden;
       display: grid;
       grid-template-columns: 1.45fr 1.35fr 1.05fr;
-      grid-template-areas: "left center right";
+      grid-template-areas: "logo center portrait";
       align-items: center;
       gap: 28px;
       padding: 24px 36px;
     }
 
-    /* Layout-varianter styret via knapperne i toppen */
-    .bus-ad-canvas.layout-swap {
-      grid-template-columns: 1.05fr 1.4fr 1.4fr;
-      grid-template-areas: "right center left";
+    /* Logo i højre side */
+    .bus-ad-canvas.logo-right {
+      grid-template-columns: 1.05fr 1.35fr 1.45fr;
+      grid-template-areas: "portrait center logo";
     }
 
-    .bus-ad-canvas.layout-curious {
-      grid-template-columns: 1.35fr 1.5fr 0.95fr;
-      grid-template-areas: "left center right";
+    /* Uden profilbillede – Logo til venstre */
+    .bus-ad-canvas.no-portrait:not(.logo-right) {
+      grid-template-columns: 1.45fr 1.65fr 0.75fr;
+      grid-template-areas: "logo center ctaonly";
     }
 
-    .bus-ad-canvas.layout-no-portrait {
-      grid-template-columns: 1.5fr 1.6fr 0.9fr;
-      grid-template-areas: "left center right";
-    }
-
-    .bus-ad-canvas.layout-no-portrait .right-column {
-      display: none;
-    }
-
-    .bus-ad-canvas.layout-no-portrait .message-block {
-      grid-column: 2 / span 2;
+    /* Uden profilbillede – Logo til højre */
+    .bus-ad-canvas.no-portrait.logo-right {
+      grid-template-columns: 0.75fr 1.65fr 1.45fr;
+      grid-template-areas: "ctaonly center logo";
     }
 
     /* Klinikbillede som baggrund, forskudt ca. 1/3 nedad og 1/6 til venstre */
@@ -171,9 +181,15 @@
       opacity: 0.72;
       transform: translateX(-16.67%) scale(1.24);
       filter: saturate(0.65) contrast(1.02);
+      transition: transform 0.2s ease;
     }
 
-    /* Dæmpet overlay i brandets farver */
+    /* Horisontal spejlvending (højre/venstre) af baggrundsbillede */
+    .clinic-bg.flipped {
+      transform: translateX(16.67%) scale(-1.24, 1.24);
+    }
+
+    /* Dæmpet overlay i brandboardets farver */
     .clinic-overlay {
       position: absolute;
       inset: 0;
@@ -186,9 +202,9 @@
       );
     }
 
-    /* Venstre/Logo-område */
+    /* Logo-område */
     .logo-column {
-      grid-area: left;
+      grid-area: logo;
       position: relative;
       z-index: 2;
       display: flex;
@@ -199,7 +215,7 @@
       gap: 10px;
     }
 
-    .bus-ad-canvas.layout-swap .logo-column {
+    .bus-ad-canvas.logo-right .logo-column {
       align-items: flex-end;
       text-align: right;
     }
@@ -211,7 +227,7 @@
       justify-content: flex-start;
     }
 
-    .bus-ad-canvas.layout-swap .logo-slot {
+    .bus-ad-canvas.logo-right .logo-slot {
       justify-content: flex-end;
     }
 
@@ -227,7 +243,7 @@
       filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
     }
 
-    .bus-ad-canvas.layout-swap .logo-slot img {
+    .bus-ad-canvas.logo-right .logo-slot img {
       transform-origin: right center;
     }
 
@@ -272,9 +288,9 @@
       text-shadow: 0 2px 12px rgba(21, 31, 40, 0.85);
     }
 
-    /* Portræt- og kontaktområde (sikret mod klipning i bunden) */
-    .right-column {
-      grid-area: right;
+    /* Portræt- og kontaktområde */
+    .portrait-column {
+      grid-area: portrait;
       position: relative;
       z-index: 2;
       height: 100%;
@@ -287,8 +303,18 @@
       gap: 10px;
     }
 
-    .bus-ad-canvas.layout-swap .right-column {
+    .bus-ad-canvas.logo-right .portrait-column {
       justify-items: start;
+    }
+
+    .bus-ad-canvas.no-portrait .portrait-column {
+      grid-area: ctaonly;
+      grid-template-rows: 1fr;
+      align-items: end;
+    }
+
+    .bus-ad-canvas.no-portrait .portrait-slot {
+      display: none;
     }
 
     .portrait-slot {
@@ -312,9 +338,15 @@
       height: 100%;
       object-fit: cover;
       object-position: center top;
-      opacity: 0.54;
+      opacity: 0.56;
       filter: contrast(0.98) saturate(0.75);
       display: block;
+      transition: transform 0.2s ease;
+    }
+
+    /* Når logo står i højre side, flytter profilbilledet til venstre side og spejlvendes ind mod teksten */
+    .bus-ad-canvas.logo-right .portrait-slot img {
+      transform: scaleX(-1);
     }
 
     .cta-line {
@@ -328,7 +360,7 @@
       text-shadow: 0 2px 10px rgba(21, 31, 40, 0.9);
     }
 
-    .bus-ad-canvas.layout-swap .cta-line {
+    .bus-ad-canvas.logo-right .cta-line {
       text-align: left;
     }
 
@@ -339,10 +371,10 @@
       color: var(--brand-taupe);
     }
 
-    /* Koncept-beskrivelse under reklamen */
-    .concept-banner {
+    /* Status-bjælke under reklamen */
+    .status-banner {
       margin-top: 16px;
-      padding: 14px 18px;
+      padding: 13px 18px;
       background: rgba(1, 63, 88, 0.24);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
@@ -351,11 +383,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
     }
 
-    .concept-banner strong {
+    .status-banner strong {
       color: var(--brand-sand);
     }
 
@@ -401,40 +433,36 @@
 
     @media (max-width: 900px) {
       .bus-ad-canvas,
-      .bus-ad-canvas.layout-swap,
-      .bus-ad-canvas.layout-curious,
-      .bus-ad-canvas.layout-no-portrait {
+      .bus-ad-canvas.logo-right,
+      .bus-ad-canvas.no-portrait:not(.logo-right),
+      .bus-ad-canvas.no-portrait.logo-right {
         aspect-ratio: auto;
         grid-template-columns: 1fr;
         grid-template-areas:
-          "left"
+          "logo"
           "center"
-          "right";
+          "portrait";
         text-align: left;
       }
 
-      .bus-ad-canvas.layout-no-portrait .message-block {
-        grid-column: auto;
-      }
-
       .logo-column,
-      .bus-ad-canvas.layout-swap .logo-column,
-      .right-column,
+      .bus-ad-canvas.logo-right .logo-column,
+      .portrait-column,
       .cta-line,
-      .bus-ad-canvas.layout-swap .cta-line {
+      .bus-ad-canvas.logo-right .cta-line {
         align-items: flex-start;
         justify-items: start;
         text-align: left;
       }
 
       .logo-slot img,
-      .bus-ad-canvas.layout-swap .logo-slot img {
+      .bus-ad-canvas.logo-right .logo-slot img {
         max-height: 200px;
         transform: scale(1.1);
         transform-origin: left center;
       }
 
-      .right-column {
+      .portrait-column {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -450,29 +478,93 @@
 <body>
   <div class="container">
     <div class="preview-toolbar">
-      <div class="preview-meta">
-        <strong>Recharge Life</strong> · Alm. venstreside (Ordre #122411) · Uge 52 (2026) – Uge 24 (2027) · Deadline: <strong>01.12.2026</strong>
+      <!-- Række 1: Meta + Tekstvalg -->
+      <div class="toolbar-row">
+        <div class="preview-meta">
+          <strong>Recharge Life</strong> · Alm. venstreside (Ordre #122411) · Deadline: <strong>01.12.2026</strong>
+        </div>
+        <div class="toolbar-group" id="textButtons">
+          <span class="toolbar-label">Tekst:</span>
+          <button class="btn active" type="button" data-text="surgery" onclick="setTextVariant('surgery')">
+            1 · Operation &amp; æstetik
+          </button>
+          <button class="btn" type="button" data-text="injury" onclick="setTextVariant('injury')">
+            2 · Skader &amp; restitution
+          </button>
+          <button class="btn" type="button" data-text="curious" onclick="setTextVariant('curious')">
+            3 · Nysgerrig / Ilt under tryk
+          </button>
+          <button class="btn" type="button" data-text="direct" onclick="setTextVariant('direct')">
+            4 · Stramt &amp; direkte
+          </button>
+        </div>
       </div>
-      <div class="variant-buttons">
-        <button class="btn active" type="button" onclick="setConcept('surgery', this)">
-          1 · Operation &amp; æstetik
-        </button>
-        <button class="btn" type="button" onclick="setConcept('injury', this)">
-          2 · Skader &amp; ombyttet layout
-        </button>
-        <button class="btn" type="button" onclick="setConcept('curious', this)">
-          3 · Nysgerrig / Ilt under tryk
-        </button>
-        <button class="btn" type="button" onclick="setConcept('clean', this)">
-          4 · Stramt fokus (uden portræt)
-        </button>
+
+      <!-- Række 2: Baggrund + Spejl baggrund -->
+      <div class="toolbar-row">
+        <div class="toolbar-group" id="bgButtons">
+          <span class="toolbar-label">Baggrund:</span>
+          <button class="btn active" type="button" data-bg="pictures/DSC08876.jpg" onclick="setBackground('pictures/DSC08876.jpg')">
+            DSC08876
+          </button>
+          <button class="btn" type="button" data-bg="pictures/DSC08855.jpg" onclick="setBackground('pictures/DSC08855.jpg')">
+            DSC08855
+          </button>
+          <button class="btn" type="button" data-bg="pictures/DSC08873.jpg" onclick="setBackground('pictures/DSC08873.jpg')">
+            DSC08873
+          </button>
+          <button class="btn" type="button" data-bg="pictures/DSC08896.jpg" onclick="setBackground('pictures/DSC08896.jpg')">
+            DSC08896
+          </button>
+          <button class="btn" type="button" data-bg="pictures/DSC08865.jpg" onclick="setBackground('pictures/DSC08865.jpg')">
+            DSC08865
+          </button>
+          <button class="btn" type="button" data-bg="pictures/DSC08935.jpg" onclick="setBackground('pictures/DSC08935.jpg')">
+            DSC08935
+          </button>
+          <button class="btn" type="button" id="flipBgBtn" onclick="toggleBgFlip()">
+            Spejl baggrund (H/V): Fra
+          </button>
+        </div>
+      </div>
+
+      <!-- Række 3: Logo placering + Profilbillede til/fra -->
+      <div class="toolbar-row">
+        <div class="toolbar-group" id="logoSideButtons">
+          <span class="toolbar-label">Logo-side:</span>
+          <button class="btn active" type="button" data-side="left" onclick="setLogoSide('left')">
+            Logo i venstre side
+          </button>
+          <button class="btn" type="button" data-side="right" onclick="setLogoSide('right')">
+            Logo i højre side
+          </button>
+        </div>
+
+        <div class="toolbar-group" id="portraitButtons">
+          <span class="toolbar-label">Profilbillede:</span>
+          <button class="btn active" type="button" id="togglePortraitBtn" onclick="togglePortraitEnabled()">
+            Profilbillede: Til
+          </button>
+          <button class="btn active" type="button" data-portrait="pictures/Michael_colour_blue.jpg" onclick="selectPortrait('pictures/Michael_colour_blue.jpg')">
+            Blå farve
+          </button>
+          <button class="btn" type="button" data-portrait="pictures/Michael_colour_black1.jpg" onclick="selectPortrait('pictures/Michael_colour_black1.jpg')">
+            Sort 1
+          </button>
+          <button class="btn" type="button" data-portrait="pictures/Michael_colour_black2.jpg" onclick="selectPortrait('pictures/Michael_colour_black2.jpg')">
+            Sort 2
+          </button>
+          <button class="btn" type="button" data-portrait="pictures/MichaelBWJuly2026.png" onclick="selectPortrait('pictures/MichaelBWJuly2026.png')">
+            S/H portræt
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="bus-ad-wrapper">
       <div class="bus-ad-canvas" id="busAdCanvas">
-        <!-- Klinikbillede som baggrund, flyttet ca. 1/3 nedad og 1/6 til venstre -->
-        <img class="clinic-bg" src="pictures/DSC08876.jpg" alt="Recharge Life klinik – hyperbarisk iltbehandling" />
+        <!-- Klinikbillede som baggrund -->
+        <img class="clinic-bg" id="clinicBg" src="pictures/DSC08876.jpg" alt="Recharge Life klinik – hyperbarisk iltbehandling" />
 
         <!-- Dæmpet overlay i brandboardets farver -->
         <div class="clinic-overlay" id="clinicOverlay"></div>
@@ -480,7 +572,7 @@
         <!-- Logo-kolonne -->
         <div class="logo-column">
           <div class="logo-slot" id="logoSlot">
-            <img src="pictures/Recharge Life_Large_Transparent_Variant 1.png" alt="Recharge Life" />
+            <img id="logoImg" src="pictures/Recharge Life_Large_Transparent_Variant 1.png" alt="Recharge Life" />
           </div>
         </div>
 
@@ -495,10 +587,10 @@
           </p>
         </div>
 
-        <!-- Portræt + kontakt/web (sikret med minmax(0, 1fr) så teksten nederst aldrig skubbes ud) -->
-        <div class="right-column">
+        <!-- Portræt + kontakt/web -->
+        <div class="portrait-column">
           <div class="portrait-slot" id="portraitSlot">
-            <img src="pictures/MichaelBWJuly2026.png" alt="Michael Boye Christensen – Recharge Life" />
+            <img id="portraitImg" src="pictures/Michael_colour_blue.jpg" alt="Michael Boye Christensen – Recharge Life" />
           </div>
 
           <div class="cta-line">
@@ -508,28 +600,29 @@
         </div>
       </div>
 
-      <div class="concept-banner" id="conceptBanner">
+      <div class="status-banner" id="statusBanner">
         <div>
-          <strong>Grafiker-note (Koncept 1):</strong> Rammer målgruppen for kosmetiske og kirurgiske indgreb ved at koble selve efterforløbet til et roligere og flottere slutresultat.
+          <strong>Valgt opsætning:</strong> Tekst 1 · Logo i venstre side · Profilbillede til · Baggrund normal
         </div>
         <div>
-          <strong>Layout:</strong> Logo tv. · Budskab midt · Fadet portræt + web th.
+          <strong>Tip:</strong> Når logo står i højre side, placeres profilbilledet automatisk i venstre side vendt mod teksten.
         </div>
       </div>
     </div>
 
     <div class="notes-grid">
       <div class="note-card">
-        <h2>Hvad der blev rettet nederst til højre</h2>
+        <h2>Sådan tester du kombinationer</h2>
         <ul>
-          <li><code>.right-column</code> bruger nu <code>grid-template-rows: minmax(0, 1fr) auto</code> og <code>min-height: 0</code> på <code>.portrait-slot</code>, så <code>rechargelife.dk</code> og <code>Baldersvej 9 · Hillerød</code> altid forbliver synlige i bunden.</li>
+          <li>Alle fire valgmuligheder (<strong>Tekst</strong>, <strong>Baggrund + spejlvending</strong>, <strong>Logo-side</strong> og <strong>Profilbillede til/fra</strong>) styrer deres egen del uden at overskrive dine øvrige valg.</li>
+          <li>Når du har fundet den kombination, du bedst kan lide, noterer du blot tekstnr., baggrundsfil, logo-side og evt. portrætfil til <code>grafiker@outofhomemedia.dk</code>.</li>
         </ul>
       </div>
       <div class="note-card">
         <h2>Husk til grafiker@outofhomemedia.dk</h2>
         <ul>
-          <li><strong>Deadline:</strong> Senest <strong>01.12.2026</strong>.</li>
-          <li><strong>Farver:</strong> Lever billeder og logo i <strong>CMYK</strong> (skærmfarver kan afvige ved tryk).</li>
+          <li><strong>Deadline:</strong> Senest <strong>01.12.2026</strong> (Ordre #122411).</li>
+          <li><strong>Farver:</strong> Lever de valgte billeder og logo i <strong>CMYK</strong>.</li>
           <li><strong>Afsender:</strong> Recharge Life fremgår tydeligt.</li>
         </ul>
       </div>
@@ -537,64 +630,137 @@
   </div>
 
   <script>
-    const concepts = {
+    const textVariants = {
       surgery: {
-        layoutClass: "",
+        label: "1 · Operation & æstetik",
         eyebrow: "Efter operation & kosmetisk indgreb · Hillerød",
         headline: "Det pæneste resultat starter, når operationen er slut.",
-        subline: "Giv vævet optimale betingelser for hurtig, rolig heling med ilt under tryk.",
-        note: "<strong>Grafiker-note (Koncept 1):</strong> Rammer målgruppen for kosmetiske og kirurgiske indgreb ved at koble selve efterforløbet til et roligere og flottere slutresultat.",
-        layoutMeta: "<strong>Layout:</strong> Logo tv. · Budskab midt · Fadet portræt + web th."
+        subline: "Giv vævet optimale betingelser for hurtig, rolig heling med ilt under tryk."
       },
       injury: {
-        layoutClass: "layout-swap",
+        label: "2 · Skader & restitution",
         eyebrow: "Skader & restitution · Hillerød",
         headline: "Kroppen kan hele hurtigere, end du tror.",
-        subline: "Målrettet restitution efter skade, overbelastning eller indgreb.",
-        note: "<strong>Grafiker-note (Koncept 2):</strong> Taler direkte til aktive og skadesramte med ombyttet billedbalance – portrættet fader ind fra venstre, mens logo og adresse samles til højre.",
-        layoutMeta: "<strong>Layout:</strong> Portræt tv. · Budskab midt · Logo + web th."
+        subline: "Målrettet restitution efter skade, overbelastning eller indgreb."
       },
       curious: {
-        layoutClass: "layout-curious",
+        label: "3 · Nysgerrig / Ilt under tryk",
         eyebrow: "Nysgerrig på ilt under tryk? · Hillerød",
         headline: "Hvad sker der, når kroppen får ilt under tryk?",
-        subline: "Et overset redskab til hurtigere heling, restitution og fornyet energi.",
-        note: "<strong>Grafiker-note (Koncept 3):</strong> Spiller på nysgerrighed i trafikken – folk ser bussen, undrer sig over spørgsmålet og husker Recharge Life.",
-        layoutMeta: "<strong>Layout:</strong> Stort logo tv. · Spørgsmål midt · Fadet portræt + web th."
+        subline: "Et overset redskab til hurtigere heling, restitution og fornyet energi."
       },
-      clean: {
-        layoutClass: "layout-no-portrait",
+      direct: {
+        label: "4 · Stramt & direkte",
         eyebrow: "Hyperbarisk ilt & restitution · Hillerød",
         headline: "Når kroppen skal hele hurtigere.",
-        subline: "Efter operation, kosmetisk behandling eller skade – rechargelife.dk · Baldersvej 9, Hillerød.",
-        note: "<strong>Grafiker-note (Koncept 4):</strong> Ekstra stram og rolig komposition uden portræt, så logo, klinikstemning og hovedbudskab får maksimal ro.",
-        layoutMeta: "<strong>Layout:</strong> Stort logo tv. · Stramt budskab & info th."
+        subline: "Efter operation, kosmetisk behandling eller skade – rechargelife.dk · Baldersvej 9, Hillerød."
       }
     };
 
-    function setConcept(key, clickedBtn) {
-      const data = concepts[key];
+    const state = {
+      textKey: "surgery",
+      bgSrc: "pictures/DSC08876.jpg",
+      bgFlipped: false,
+      logoSide: "left",
+      portraitEnabled: true,
+      portraitSrc: "pictures/Michael_colour_blue.jpg"
+    };
+
+    function updateStatusBanner() {
+      const textLabel = textVariants[state.textKey].label;
+      const logoLabel = state.logoSide === "left" ? "Logo i venstre side" : "Logo i højre side";
+      const portraitLabel = state.portraitEnabled
+        ? `Profilbillede til (${state.portraitSrc.split("/").pop()})`
+        : "Profilbillede fra";
+      const bgName = state.bgSrc.split("/").pop();
+      const flipLabel = state.bgFlipped ? "spejlvendt (H/V)" : "normal";
+
+      document.getElementById("statusBanner").innerHTML =
+        `<div><strong>Valgt opsætning:</strong> ${textLabel} · ${logoLabel} · ${portraitLabel} · Baggrund: ${bgName} (${flipLabel})</div>` +
+        `<div><strong>Tip:</strong> Alle valg kan kombineres frit på tværs.</div>`;
+    }
+
+    function setTextVariant(key) {
+      const data = textVariants[key];
       if (!data) return;
 
-      const canvas = document.getElementById("busAdCanvas");
-      canvas.className = "bus-ad-canvas";
-      if (data.layoutClass) {
-        canvas.classList.add(data.layoutClass);
-      }
-
+      state.textKey = key;
       document.getElementById("eyebrowText").textContent = data.eyebrow;
       document.getElementById("headlineText").textContent = data.headline;
       document.getElementById("sublineText").textContent = data.subline;
 
-      document.getElementById("conceptBanner").innerHTML =
-        "<div>" + data.note + "</div><div>" + data.layoutMeta + "</div>";
-
-      document.querySelectorAll(".variant-buttons .btn").forEach((btn) => {
-        btn.classList.remove("active");
+      document.querySelectorAll("#textButtons .btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-text") === key);
       });
-      if (clickedBtn) {
-        clickedBtn.classList.add("active");
+
+      updateStatusBanner();
+    }
+
+    function setBackground(src) {
+      state.bgSrc = src;
+      document.getElementById("clinicBg").src = src;
+
+      document.querySelectorAll("#bgButtons [data-bg]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-bg") === src);
+      });
+
+      updateStatusBanner();
+    }
+
+    function toggleBgFlip() {
+      state.bgFlipped = !state.bgFlipped;
+      const bgImg = document.getElementById("clinicBg");
+      const flipBtn = document.getElementById("flipBgBtn");
+
+      bgImg.classList.toggle("flipped", state.bgFlipped);
+      flipBtn.classList.toggle("active", state.bgFlipped);
+      flipBtn.textContent = state.bgFlipped ? "Spejl baggrund (H/V): Til" : "Spejl baggrund (H/V): Fra";
+
+      updateStatusBanner();
+    }
+
+    function setLogoSide(side) {
+      state.logoSide = side;
+      const canvas = document.getElementById("busAdCanvas");
+      canvas.classList.toggle("logo-right", side === "right");
+
+      document.querySelectorAll("#logoSideButtons .btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-side") === side);
+      });
+
+      updateStatusBanner();
+    }
+
+    function togglePortraitEnabled() {
+      state.portraitEnabled = !state.portraitEnabled;
+      const canvas = document.getElementById("busAdCanvas");
+      const toggleBtn = document.getElementById("togglePortraitBtn");
+
+      canvas.classList.toggle("no-portrait", !state.portraitEnabled);
+      toggleBtn.classList.toggle("active", state.portraitEnabled);
+      toggleBtn.textContent = state.portraitEnabled ? "Profilbillede: Til" : "Profilbillede: Fra";
+
+      updateStatusBanner();
+    }
+
+    function selectPortrait(src) {
+      state.portraitSrc = src;
+      document.getElementById("portraitImg").src = src;
+
+      // Sørg for at profilbilledet automatisk slås til, hvis brugeren klikker på et specifikt portræt
+      if (!state.portraitEnabled) {
+        state.portraitEnabled = true;
+        document.getElementById("busAdCanvas").classList.remove("no-portrait");
+        const toggleBtn = document.getElementById("togglePortraitBtn");
+        toggleBtn.classList.add("active");
+        toggleBtn.textContent = "Profilbillede: Til";
       }
+
+      document.querySelectorAll("#portraitButtons [data-portrait]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-portrait") === src);
+      });
+
+      updateStatusBanner();
     }
   </script>
 </body>
